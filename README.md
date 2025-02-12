@@ -12,9 +12,9 @@ To make decisions, the agent’s actuators are responsible for actions like bett
 https://huggingface.co/datasets/RZ412/PokerBench
 
 ## Collaborators
-Hayden Kwok
-Katelyn Villamin
-ChungYinLee
-Ethan Shih
-Alan Diaz
+- Hayden Kwok
+- Katelyn Villamin
+- ChungYin Lee
+- Ethan Shih
+- Alan Diaz
 
