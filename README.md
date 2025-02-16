@@ -20,6 +20,10 @@ To make decisions, the agent’s actuators are responsible for actions like bett
 ## Dataset
 Source: https://huggingface.co/datasets/RZ412/PokerBench
 
+## Notebooks with Full Code
+- [Data Extraction](data_extraction.ipynb)
+- [Modeling and Evalutation](modeling_and_evaluating.ipynb)
+
 ## Agent Setup
 We simplify the poker game by assuming opponent's can only "Check" and our player can only "Check or Fold," because for now we want to find the probability of winning given our observations (Our hands and the Face up cards). In poker, different hands have different "strength," for instance a Two and a Seven (2,7) is weaker than an Ace and a Two (1,2) because the latter has a higher card and can possibly form a straight but former cannot. However, as the game progresses, (dealing the faceup cards), the first pair could have a greater strength, for example, with a flop (7,7,7). That is, given different face-up cards, the probability of winning changes. Therefore we set up our Bayesian Network with each stage of the game impacting only the next stage of the game.  It finds the probability of winning given our hands, flop, turn, river and the hidden variable opponent hands. While we recognize in real life, the opponent's hand is set once dealt and will have an impact on what card being dealt next, since we could not observe the opponent's hands, we assume it has no impact on the dealing deck and it is "generated" in the show down, (the last stage of the game that every player shows their hands). 
 
