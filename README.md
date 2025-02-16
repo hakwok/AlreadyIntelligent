@@ -79,7 +79,7 @@ def start_round(self, agent_function = None):
 Say we are given a hands $$\( H = h \), \( P_{ML}(Winning | H = h) \)$$
 
 $$
-P_{ML}(Winning | H = h) = \sum_{\{f, t, r, opp\}}} P_{ML}(Winning,f, t, r, opp| H = h)
+P_{ML}(Winning | H = h) = \sum_{\{f, t, r, opp\}} P_{ML}(Winning,f, t, r, opp| H = h)
 $$
 
 $$
