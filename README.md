@@ -19,8 +19,13 @@ To make decisions, the agent’s actuators are responsible for actions like bett
 
 ## Dataset & Source
 Dataset: https://huggingface.co/datasets/RZ412/PokerBench
-
 Lib Source: https://github.com/uoftcprg/pokerkit
+
+## Notebooks with Full Code
+- [Data Extraction](data_extraction.ipynb)
+- [Modeling and Evalutation](modeling_and_evaluating.ipynb)
+
+
 ## Agent Setup
 We simplify the poker game by assuming opponent's can only "Check" and our player can only "Check or Fold," because for now we want to find the probability of winning given our observations (Our hands and the Face up cards). 
 
