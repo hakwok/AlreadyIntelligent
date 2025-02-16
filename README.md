@@ -74,8 +74,6 @@ def start_round(self, agent_function = None):
 ```
 
 ## CPT
-
-## CPT
 Say we are given a hands $$\( H = h \), \( P_{ML}(Winning | H = h) \)$$
 
 $$
