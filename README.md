@@ -16,6 +16,10 @@ The goal-based agent in this study is designed to optimize decision-making in Po
 
 To make decisions, the agent’s actuators are responsible for actions like betting, folding, or raising, which are determined by analyzing the available game-state data. This includes factors such as the current betting round, the opponent’s past actions, and the distribution of cards. The agent’s sensors gather information from the environment, such as the actions taken by players, board changes, and game history, which are crucial for forming an understanding of the current state of play. This collected data helps the agent adjust its strategy, improving its chances of making the best move based on the incomplete information available.
 
+![image](https://github.com/user-attachments/assets/56deec0c-ccfd-4484-b6ef-ed2f2916b052)
+Figure 1: A graph visualization of our Bayesian Model
+
+
 
 ## Dataset & Source
 Dataset: https://huggingface.co/datasets/RZ412/PokerBench
