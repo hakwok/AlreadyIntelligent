@@ -67,15 +67,21 @@ def start_round(self):
 ```
 
 ## CPT
-Say we are given a hands $$\( H = h \), \( P_{ML}(W | H = h) \)$$
+Say we are given a hands $$\( H = h \), \( P_{ML}(Winning | H = h) \)$$
 
 $$
-P_{ML}(W | H = h) = \sum_{E} P_{ML}(W, E - \{H\} | H = h)
+P_{ML}(Winning | H = h) = \sum_{\{f, t, r, opp\}} P_{ML}(Winning,f, t, r, opp| H = h)
 $$
 
 $$
-= \frac{\text{count}(W, H=h, f, t, r, opp)}{\text{total count}}
+= \frac{\text{count}(Winning, H=h, f, t, r, opp)}{\text{total count}}
 $$
+
+Wherein:
+- H= our given hand
+- f= flop, t= turn
+- r= river
+- opp= the opponent's move
 
 Our agent estimates the cpt by finding the maximum likelihood of the sample data. We use the given evidence to initialize the simulation and run the simulation to collect sample data. Our agent would not take the risk of losing if the probability of winning given the evidence is less than certain values. 
 
