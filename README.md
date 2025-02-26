@@ -16,10 +16,8 @@ The goal-based agent in this study is designed to optimize decision-making in Po
 
 To make decisions, the agent’s actuators are responsible for actions like betting, folding, or raising, which are determined by analyzing the available game-state data. This includes factors such as the current betting round, the opponent’s past actions, and the distribution of cards. The agent’s sensors gather information from the environment, such as the actions taken by players, board changes, and game history, which are crucial for forming an understanding of the current state of play. This collected data helps the agent adjust its strategy, improving its chances of making the best move based on the incomplete information available.
 
-![image](https://github.com/user-attachments/assets/56deec0c-ccfd-4484-b6ef-ed2f2916b052)
-Figure 1: A graph visualization of our Bayesian Model
-
-
+![image](https://github.com/user-attachments/assets/242375f3-c643-4b94-9883-b888339157e2)
+Figure 1: A graph visualization of our agent
 
 ## Dataset & Source
 Dataset: https://huggingface.co/datasets/RZ412/PokerBench
@@ -104,15 +102,15 @@ Wherein:
 - r= river
 - opp= the opponent's move
 
-Our agent estimates the CPT by finding the maximum likelihood of the sample data. We use the given evidence to initialize the simulation and run the simulation to collect sample data. Our agent would not take the risk of losing if the probability of winning given the evidence is less than certain values. 
+Our agent estimates the cpt by finding the maximum likelihood of the sample data. We use the given evidence to initialize the simulation and run the simulation to collect sample data. Our agent would not take the risk of losing if the probability of winning given the evidence is less than certain values. 
 
-In the pre-flop stage, almost all the hands has a probability of winning less than 0.4 in a 6 player poker game, and therefore in order to not fold in pre-flop stage, we pick a arbitrary thresh hold, say the median (0, 0.4) = 0.2 for the probability to check.
+Our agent estimates the cpt by finding the maximum likelihood of the sample data. We use the given evidence to initialize the simulation and run the simulation to collect sample data. Our agent would not take the risk of losing if the probability of winning given the evidence is less than certain values. 
 
 ```
 #Decides what action to take based on evidence
 def our_agent(numb_player, hand, flop = None, turn = None, river = None):
   cpt = PW_E(numb_player, hand, flop, turn, river)
-  if cpt > 0.15:
+  if cpt > 0.20:
     return "CHECK"
   else:
     return "FOLD"
@@ -125,6 +123,12 @@ def PW_E(numb_player, hand, flop = None, turn = None, river = None):
   for i in (range(num_of_games)):
     count += poke_simulator(numb_player, hand, flop, turn, river)
   return count / num_of_games
+```
+
+In the pre-flop stage, almost all the hands has a probability of winning less than 0.4 in a 6 player poker game, and therefore in order to not fold in pre-flop stage, we pick a arbitrary thresh hold, say the median (0, 0.4) = 0.2 for the probability lower bound for checking.
+```
+if (CPT > .20) :
+    return "CHECK"
 ```
 
 ## Model Evaluation
