@@ -90,7 +90,13 @@ $$
 = \frac{\text{count}(Winning, H=h, f, t, r, opp)}{\text{total count}}
 $$
 
-Wherein H= our given hand, f= flop, t= turn, r= river, and opp= the opponent's move. Our agent estimates the cpt by finding the maximum likelihood of the sample data. We use the given evidence to initialize the simulation and run the simulation to collect sample data. Our agent would not take the risk of losing if the probability of winning given the evidence is less than certain values. 
+Wherein:
+- H= our given hand
+- f= flop, t= turn
+- r= river
+- opp= the opponent's move
+
+Our agent estimates the cpt by finding the maximum likelihood of the sample data. We use the given evidence to initialize the simulation and run the simulation to collect sample data. Our agent would not take the risk of losing if the probability of winning given the evidence is less than certain values. 
 
 Our agent estimates the cpt by finding the maximum likelihood of the sample data. We use the given evidence to initialize the simulation and run the simulation to collect sample data. Our agent would not take the risk of losing if the probability of winning given the evidence is less than certain values. 
 
