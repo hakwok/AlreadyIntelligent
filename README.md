@@ -100,9 +100,9 @@ Wherein:
 - r= river
 - opp= the opponent's move
 
-Our agent estimates the cpt by finding the maximum likelihood of the sample data. We use the given evidence to initialize the simulation and run the simulation to collect sample data. Our agent would not take the risk of losing if the probability of winning given the evidence is less than certain values. 
+Our agent estimates the CPT by finding the maximum likelihood of the sample data. We use the given evidence to initialize the simulation and run the simulation to collect sample data. Our agent would not take the risk of losing if the probability of winning given the evidence is less than certain values. 
 
-Our agent estimates the cpt by finding the maximum likelihood of the sample data. We use the given evidence to initialize the simulation and run the simulation to collect sample data. Our agent would not take the risk of losing if the probability of winning given the evidence is less than certain values. 
+In the pre-flop stage, almost all the hands has a probability of winning less than 0.4 in a 6 player poker game, and therefore in order to not fold in pre-flop stage, we pick a arbitrary thresh hold, say the median (0, 0.4) = 0.2 for the probability to check.
 
 ```
 #Decides what action to take based on evidence
