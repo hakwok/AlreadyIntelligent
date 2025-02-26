@@ -17,19 +17,32 @@ The goal-based agent in this study is designed to optimize decision-making in Po
 To make decisions, the agent’s actuators are responsible for actions like betting, folding, or raising, which are determined by analyzing the available game-state data. This includes factors such as the current betting round, the opponent’s past actions, and the distribution of cards. The agent’s sensors gather information from the environment, such as the actions taken by players, board changes, and game history, which are crucial for forming an understanding of the current state of play. This collected data helps the agent adjust its strategy, improving its chances of making the best move based on the incomplete information available.
 
 
-## Dataset
-Source: https://huggingface.co/datasets/RZ412/PokerBench
+## Dataset & Source
+Dataset: https://huggingface.co/datasets/RZ412/PokerBench
+
+Lib Source: https://github.com/uoftcprg/pokerkit
 
 ## Notebooks with Full Code
 - [Data Extraction](data_extraction.ipynb)
 - [Modeling and Evalutation](modeling_and_evaluating.ipynb)
 
+
 ## Agent Setup
-We simplify the poker game by assuming opponent's can only "Check" and our player can only "Check or Fold," because for now we want to find the probability of winning given our observations (Our hands and the Face up cards). In poker, different hands have different "strength," for instance a Two and a Seven (2,7) is weaker than an Ace and a Two (1,2) because the latter has a higher card and can possibly form a straight but former cannot. However, as the game progresses, (dealing the faceup cards), the first pair could have a greater strength, for example, with a flop (7,7,7). That is, given different face-up cards, the probability of winning changes. Therefore we set up our Bayesian Network with each stage of the game impacting only the next stage of the game.  It finds the probability of winning given our hands, flop, turn, river and the hidden variable opponent hands. While we recognize in real life, the opponent's hand is set once dealt and will have an impact on what card being dealt next, since we could not observe the opponent's hands, we assume it has no impact on the dealing deck and it is "generated" in the show down, (the last stage of the game that every player shows their hands). 
+We simplify the poker game by assuming opponent's can only "Check" and our player can only "Check or Fold," because for now we want to find the probability of winning given our observations (Our hands and the Face up cards). 
+
+In poker, different hands have different "strength," for instance a Two and a Seven (2,7) is weaker than an Ace and a Two (1,2) because the latter has a higher card and can possibly form a straight but former cannot. However, as the game progresses, (dealing the faceup cards), the first pair could have a greater strength, for example, with a flop (7,7,7). That is, given different face-up cards, the probability of winning changes. 
+
+Therefore we set up our Bayesian Network with each stage of the game impacting only the next stage of the game. The model finds the probability of winning given our hands, flop, turn, river and the hidden variable opponent hands. While we recognize in real life, the opponent's hand is set once dealt and will have an impact on what card being dealt next, since we could not observe the opponent's hands, we assume it has no impact on the dealing deck and it is "generated" in the show down, (the last stage of the game that every player shows their hands). 
 
 A sample game of flow:
 ```
-def start_round(self):    
+game = PokerGame(num_of_players = 6)
+game.start_round(agent)
+
+"""
+Here is an idea how the a round of Poker using Pokerkit...
+"""
+def start_round(self, agent_function = None):    
     self.state = self.sample_game(
         inf, #starting stacks
         number_of_player,
@@ -82,6 +95,8 @@ Wherein:
 - f= flop, t= turn
 - r= river
 - opp= the opponent's move
+
+Our agent estimates the cpt by finding the maximum likelihood of the sample data. We use the given evidence to initialize the simulation and run the simulation to collect sample data. Our agent would not take the risk of losing if the probability of winning given the evidence is less than certain values. 
 
 Our agent estimates the cpt by finding the maximum likelihood of the sample data. We use the given evidence to initialize the simulation and run the simulation to collect sample data. Our agent would not take the risk of losing if the probability of winning given the evidence is less than certain values. 
 
@@ -161,9 +176,5 @@ Our model is working on a simplified version of poker so we need to consider oth
 - The probability of getting a strong hand at the beginning of the game is low so we need to find the threshold that maximizes our chances of choosing the correct action. 
 - Allowing the opponent to perform more actions and taking into consideration whether the opponent raises/bets can help our model perform more complicated actions such as bluffing or calling a bluff.
 (not sure about this one) We can improve the model by having a betting history for each player. This can help the model recognize any pattern that the opponents may display such as commonly bluffing with a weak hand. With this, the model’s action will better suit the opponent.
-- It is possible to implement a risk factor for the model to use and decide whether their action should be to call or to fold. This risk factor can be implemented by tracking how many chips need to be betted and the potential winnings. If the model has a weak hand, it may still choose to not fold if the investment isn’t too high. Similarly, if the pot is small and the investment is too high the model may choose to fold despite the hand.
+- It is possible to implement a risk factor for the model to use and decide whether their action should be to call or to fold. This risk factor can be implemented by tracking how many chips need to be betted and the potential winnings. If the model has a weak hand, it may still choose to not fold if the investment isn’t too high. Similarly, if the pot is small and the investment is too high the model may choose to fold despite the hand. The reason as to why we are not considering raises or all ins is due to the incalculable fact on player personality, as well as the cases in which they are bluffing their hands. 
 - Moving forward, we want to strive for a model that maximizes the accuracy of our actions.
-
-
-
-
