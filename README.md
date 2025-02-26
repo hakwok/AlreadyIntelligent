@@ -108,7 +108,7 @@ Our agent estimates the cpt by finding the maximum likelihood of the sample data
 #Decides what action to take based on evidence
 def our_agent(numb_player, hand, flop = None, turn = None, river = None):
   cpt = PW_E(numb_player, hand, flop, turn, river)
-  if cpt > 0.15:
+  if cpt > 0.20:
     return "CHECK"
   else:
     return "FOLD"
@@ -121,6 +121,12 @@ def PW_E(numb_player, hand, flop = None, turn = None, river = None):
   for i in (range(num_of_games)):
     count += poke_simulator(numb_player, hand, flop, turn, river)
   return count / num_of_games
+```
+
+In the pre-flop stage, almost all the hands has a probability of winning less than 0.4 in a 6 player poker game, and therefore in order to not fold in pre-flop stage, we pick a arbitrary thresh hold, say the median (0, 0.4) = 0.2 for the probability lower bound for checking.
+```
+if (CPT > .20) :
+    return "CHECK"
 ```
 
 ## Model Evaluation
