@@ -132,11 +132,25 @@ if (CPT > .20) :
 ```
 
 ## Model Evaluation
-We evaluated our model based on the confusion matrix:
-- True Win: It was actually a win and was predicted a win
-- True Lose: It was actually a lose and was predicted a lose
-- False Win: It was actually a lose but was predicted a win
-- False Lose: It was actually a win but was predicted as lose
+
+# First Method:
+We evaluated our model action based on the what the outcome of the game is (we only consider the last action the agent make):
+- True  (Good)  Check: The check lead to a win. (TC)
+- False (Bad)   Check: The check lead to a lose. (FC)
+- True  (Good)  Fold : The fold avoid a lose. (TF)
+- False (Bad)   Fold : The fold avoid a win. (FF)
+
+For calcilating accuracy of the agent making a "True Action", we can count the number of true action divided by the total number of action, i.e
+
+Naive_accuracy = 'TC + TF' / 'TC + TF + FC + FF'
+
+Since our goal is to maximize the number of winning games while minimizing the number of losing games over all, we should consider how many the winning game the agent could reach among all winning games, and for all the losing games, how many the agent could avoid, i.e :
+
+Winning_accuracy = All the winning moves (checks) / number of winning games
+= 'TC' / 'TC + FF'
+
+Lose_accuracy = All avoid losing moves(Fold) / number of losing games
+= 'TF' / 'TF + FC'
 
 Given the values (hand, flop, turn, river)  from our dataset, we randomly sampled 200 game states. Our model achieved an accuracy of 0.5, indicating that its predictive performance is no better than random guessing.
 
