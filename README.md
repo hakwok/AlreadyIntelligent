@@ -131,9 +131,8 @@ if (CPT > .20) :
     return "CHECK"
 ```
 
-## Model Evaluation
+## Model Evaluation Method
 
-# First Method:
 We evaluated our model action based on the what the outcome of the game is (we only consider the last action the agent make):
 - True  (Good)  Check: The check lead to a win. (TC)
 - False (Bad)   Check: The check lead to a lose. (FC)
@@ -144,54 +143,61 @@ For calcilating accuracy of the agent making a "True Action", we can count the n
 
 Naive_accuracy = 'TC + TF' / 'TC + TF + FC + FF'
 
-Since our goal is to maximize the number of winning games while minimizing the number of losing games over all, we should consider how many the winning game the agent could reach among all winning games, and for all the losing games, how many the agent could avoid, i.e :
+Since our goal is to maximize the number of winning games while minimizing the number of losing games over all, we should consider how many the winning game the agent could reach among all winning games, and for all the losing games, how many the agent could avoid, i.e the likelihood:
 
-Winning_accuracy = All the winning moves (checks) / number of winning games
+Winning_accuracy (P(Check|Win)) = All the winning moves (checks) / number of winning games
 = 'TC' / 'TC + FF'
 
-Lose_accuracy = All avoid losing moves(Fold) / number of losing games
+Lose_accuracy (P(Fold|Lose)) = All avoid losing moves(Fold) / number of losing games
 = 'TF' / 'TF + FC'
 
-Given the values (hand, flop, turn, river)  from our dataset, we randomly sampled 200 game states. Our model achieved an accuracy of 0.5, indicating that its predictive performance is no better than random guessing.
+We can also calculate the posterior probability, the chance of winning given our agent checked, and losing given our agent fold:
+
+P(Win | Check) = 'TC' / 'TC + FC'
+
+P(Lose | Fold) = 'TF' / 'TF + FF'
+
+
+### Result
+We randomly tested 1000 game states. Our Agent achieved 0.4946 likelihood of winning and 0.9007 likelihood of losing. Comparing to the random agent with a 0.0485 and 0.9365 likelihood of winning and losing, our agent has a higher likelihood to win in a game under the same context of random agent and is slightly more likely to lose without folding than the random agent. 
 
 ```
-def sim_games(row):
-  """
-    Function to simulate the games given a certain row
+from tqdm import tqdm
 
-    Args:
-    row: A given row in the dataset
+def run_random_simulation(num_games=1000):
+    true_pos, false_pos, true_neg, false_neg = 0, 0, 0, 0
+    rtrue_pos, rfalse_pos, rtrue_neg, rfalse_neg = 0, 0, 0, 0
+    pk = PokerGame(6, 0)  # Initialize the poker game
 
-    Returns:
-    result: The result of the game (True Win, True Loss, False Win, False Lose)
-  """
-  flop= row['flop'] if not pd.isna(row['flop']) else None
-  turn= row['turn'] if not pd.isna(row['turn']) else None
-  river= row['river'] if not pd.isna(row['river']) else None
-  result= pk.start_round(our_agent, row['hands'],flop, turn, river)
-  return result
 
-def find_accuracy(df):
-  """
-    Function to calculate the accuracy of the model
+    with ProcessPoolExecutor() as executor:
+        results = list(tqdm(executor.map(run_game, [(pk, random_agent) for _ in range(num_games)]), total=num_games, desc="Simulating Random Agent Games", leave=False))
 
-    Args:
-    df: Our given Poker dataset
+    for game in results:
+        if game == "TC": rtrue_pos += 1
+        if game == "FC": rfalse_pos += 1
+        if game == "TF": rtrue_neg += 1
+        if game == "FF": rfalse_neg += 1
+    print("")
+    print(f"\nWinning Accuracy for Random Agent (out of {num_games} games):")
+    print(f"Winning Accuracy: {rtrue_pos / (rtrue_pos + rfalse_neg):.4f}")
+    print(f"Losing Accuracy: {rtrue_neg / (rtrue_neg + rfalse_pos):.4f}")
 
-    Returns:
-    accuracy: Calculated accuracy by (TL + TW)/(TL+ TW + FL + FW)
-  """
-  TL_count= (df['win']== 'TL').count()
-  TW_count= (df['win']== 'TW').count()
-  FL_count= (df['win']== 'FL').count()
-  FW_count= (df['win']== 'FW').count()
+    with ProcessPoolExecutor() as executor:
+        results = list(tqdm(executor.map(run_game, [(pk, our_agent) for _ in range(num_games)]), total=num_games, desc="Simulating Our Agent Games", leave=False))
+    for game in results:
+        if game == "TC": true_pos += 1
+        if game == "FC": false_pos += 1
+        if game == "TF": true_neg += 1
+        if game == "FF": false_neg += 1
 
-  accuracy= (TL_count + TW_count)/ (TL_count + TW_count + FL_count + FW_count)
-  return accuracy
+    print("")
+    print(f"\nWinning Accuracy for our Agent (out of {num_games} games):")
+    print(f"Winning Accuracy: {true_pos / (true_pos + false_neg):.4f}")
+    print(f"Losing Accuracy: {true_neg / (true_neg + false_pos):.4f}")
 
-sample= poker_df.sample(200, random_state=1)
-sample['win']= sample.apply(sim_games, axis=1)
-accuracy= find_accuracy(sample)
+
+run_random_simulation() # Call the function to start the simulation
 ```
 
 ## Conclusion
