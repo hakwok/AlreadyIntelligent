@@ -28,7 +28,7 @@ Lib Source: https://github.com/uoftcprg/pokerkit
 - [Data Extraction](data_extraction.ipynb)
 - [Modeling and Evalutation](modeling_and_evaluating.ipynb)
 
-## Data Preprocessing :
+## Data Preprocessing
 The dataset "PokerBench" includes different scenarios in a poker game (pre/post flop, Turn and River), and other information like the betting history. We extract the observation, face up cards and store it in this order: Hnads (2cards), Flop(3cards), Turn(1cards), Rriver(1cards). 
 
 Each card is stored with two cahracters, the 1st character representing the number and 2nd  character representing the suit, with all caps and separated with comma, and card that is not dealt yet is filled with "Null". For instance King of Heart is "KH", Ten of Spades is "TS" and two of Club is "2C". This allows easy access to the cards we want to initialize in the testing and training stage. 
@@ -213,7 +213,7 @@ Our model’s accuracy is not ideal. By accuracy, we define our model’s abilit
 ## Monte Carlo Tree Search (MCTS) Agent : PEAS
 This model will perform the same task as the previous one, building upon it to achieve improved performance. Since we are working with the same preprocessed data, the PEAS for this model remain consistent with those of the Bayesian Agent.
 
-## Data Preprocessing :
+## Data Preprocessing
 
 ## MCTS Agent Setup
 
