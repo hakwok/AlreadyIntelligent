@@ -218,13 +218,22 @@ The goal-based agent in this study is designed to optimize decision-making in Po
 To make decisions, the agent’s actuators are responsible for actions like betting, folding, or raising, which are determined by analyzing the available game-state data. This includes factors such as the current betting round, the opponent’s past actions, and the distribution of cards. The agent’s sensors gather information from the environment, such as the actions taken by players, board changes, and game history, which are crucial for forming an understanding of the current state of play. This collected data helps the agent adjust its strategy, improving its chances of making the best move based on the incomplete information available.
 
 ## Data Preprocessing
-The dataset "PokerBench" includes different scenarios in a poker game (pre/post flop, Turn and River), and other information like the betting history. We extract the observation, face up cards and store it in this order: Hnads (2cards), Flop(3cards), Turn(1cards), Rriver(1cards). 
+The dataset "PokerBench" includes different scenarios in a poker game (pre/post flop, Turn and River), and other information like the betting history. We extract the observation, face up cards and store it in this order: Hands (2cards), Flop(3cards), Turn(1cards), River(1cards). 
 
-Each card is stored with two cahracters, the 1st character representing the number and 2nd  character representing the suit, with all caps and separated with comma, and card that is not dealt yet is filled with "Null". For instance King of Heart is "KH", Ten of Spades is "TS" and two of Club is "2C". This allows easy access to the cards we want to initialize in the testing and training stage. 
+Each card is stored with two characters, the 1st character representing the number and 2nd  character representing the suit, with all caps and separated with comma, and card that is not dealt yet is filled with "Null". For instance King of Heart is "KH", Ten of Spades is "TS" and two of Club is "2C". This allows easy access to the cards we want to initialize in the testing and training stage. 
 
 ## Monte Carlo Agent Setup
 
+
 ## CPT
+Predicting the exact probabilities of certain in events in poker is generally impossible. For example, predicting the likelihood that the opponent holds a certain card combination will not be possible due to incomplete information. As such, due to the lack of perfect knowledge on opponent's hidden cards or future cards in the deck, calculating the exact conditional probability of a hidden event given observed cards is impractical.
+
+The Markov Chain Monte Carlo (MCMC) method addresses this problem. This sampling-based approach helps us estimate probabilities through approximation from simulating many scenarios. 
+
+In our set up, the Markov blanket is the set of all the currently known information on the poker board (our hand, the community cards, and revealed opponent cards) for any hidden card 𝑥. Given the Markov Blanket 𝐵𝑥, the conditional probability is P(𝑥∣𝐵𝑥), which is the probability of drawing the card 𝑥 from the remaining unseen cards. Under the assumption that every card that is not already revealed could equally likely be in the deck or in the opponent's hand, this suggests that each hidden card is equally probable. As such, sampling P(𝑥∣𝐵𝑥) simply translates to randomly drawing a card from the unseen deck. This provides a straightforward and more computationally efficient method for the MCMC sampling process. 
+
+Through this, the MCMC method allows us to estimate the probabilities reflecting real-life poker scenarios, despite the inherent uncertainty.
+
 
 ## Model Evaluation Method
 
