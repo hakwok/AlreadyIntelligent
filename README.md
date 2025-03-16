@@ -236,6 +236,20 @@ Through this, the MCMC method allows us to estimate the probabilities reflecting
 
 
 ## Model Evaluation Method
+To reiterate:
+True (Good) Check: The check lead to a win. (TC)
+False (Bad) Check: The check lead to a lose. (FC)
+True (Good) Fold : The fold avoid a lose. (TF)
+False (Bad) Fold : The fold avoid a win. (FF)
 
+The results from the MCMC Agent provided:
+8 TC, 13 FP, 796 TF, 183 FF
+with a winning accuracy of 4.19%, a losing accuracy of 98.39%, P(Win|Check) of 38.10% and P(Lose|Fold) of 81.31%.
+
+While the results from the MC Agent provided:
+164 TP, 5 FC, 831 TF, 0 FF
+with a winning accuracy of 100%, Losing Accuracy of 99.40%, P(Win|Check) of 97.04%, and P(Los|Fold): 100%.
+
+Ultimately the MC Agent provided better results as it had never folded to avoid a win, and has outperformed the MCMC agent by an astonishing 95.81%. Additionally, the MCMC agent misclassifies quite a large amount of false folds, leading to a high rate of avoiding potentials wins. Lastly the MC Agent shows perfect decision-making by having a 0 in false negatives while maintaining high true positive rates.
 
 ## Conclusion & Results
