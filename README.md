@@ -223,6 +223,9 @@ The dataset "PokerBench" includes different scenarios in a poker game (pre/post 
 Each card is stored with two characters, the 1st character representing the number and 2nd  character representing the suit, with all caps and separated with comma, and card that is not dealt yet is filled with "Null". For instance King of Heart is "KH", Ten of Spades is "TS" and two of Club is "2C". This allows easy access to the cards we want to initialize in the testing and training stage. 
 
 ## Monte Carlo Agent Setup
+Because of finding the exact inference is impossible with imperfect information (i.e. the face down card and unpredictable nature of human mind), we used simulation to estimate the probability of winning. We have made two assumption that any cards which is not in the evidence (on the board) is in the dealable cards deck, and the opponents' hands is dealt after the river which means it has no particular effect on what could possibly be dealt onto the board. 
+
+In the first agent, we simulated the game from the moment the agent queries for the probability onwards. In the second agent, we used MCMC method to do simulation, that is we initialize all the non-evidence cards to some random valid values and in each iteration we resample one of the non-evidence cards and record the result. Both agent uses the count of win divided by the number of simulation to estimate the winning probability given the evidence. 
 
 
 ## CPT
