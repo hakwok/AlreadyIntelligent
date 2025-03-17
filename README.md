@@ -17,7 +17,7 @@ Lib Source: https://github.com/uoftcprg/pokerkit
 
 ## Notebooks with Full Code
 - [Data Extraction](data_extraction.ipynb)
-- [Modeling and Evalutation](modeling_and_evaluating.ipynb)
+- [Model_MCMC_and_MC](Model_MCMC_and_MC.ipynb)
 
 ## Monte Carlo Agent : PEAS
 This model will perform the same task as the previous one, building upon it to achieve improved performance. Since we are working with the same preprocessed data, the PEAS for this model remain consistent with those of the Bayesian Agent.
