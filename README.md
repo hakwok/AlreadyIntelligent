@@ -201,3 +201,18 @@ These were the results from the evaluation:
 Ultimately the MC Agent provided better results as it had never folded to avoid a win, and has outperformed the MCMC agent by an astonishing 95.81%. Additionally, the MCMC agent misclassifies quite a large amount of false folds, leading to a high rate of avoiding potentials wins. Lastly the MC Agent shows perfect decision-making by having a 0 in false negatives while maintaining high true positive rates.
 
 ## Conclusion & Results
+We evaluated the performance of a Markov Chain Monte Carlo (MCMC) agent over 1000 simulated poker games, comparing it against a simpler Bayesian-based agent utilizing Monte Carlo (MC) simulation. The MCMC agent achieved a winning accuracy of 4.19%, correctly deciding to check (leading to wins) in only 8 instances, while incorrectly folding potentially winning hands 183 times. By contrast, the MC agent, used as a benchmark, showed a significantly higher winning accuracy of 100%, making 164 correct checks without incorrectly folding winning opportunities. For losing accuracy, the MCMC agent performed effectively at 98.39%, slightly below the MC agent's 99.40%. Additionally, posterior probabilities showed the MCMC agent's checks resulted in wins only 38.10% of the time, demonstrating room for substantial improvement relative to the random baseline agent's 4.85% win likelihood.
+
+### Interpretation
+The MCMC agent exhibited overly cautious behavior, frequently folding hands that could have led to wins. This suggests the probability thresholds or the method for scenario sampling used by the MCMC agent may have been suboptimal, resulting in its low winning accuracy. However, its high losing accuracy indicates it is effectively minimizing losses by correctly folding weak hands.
+
+### Points of Improvement
+
+To enhance the performance of the MCMC agent, several areas can be targeted for improvement:
+- Risk Threshold Tuning: Adjusting and optimizing probability thresholds through methods such as tree search or Bayesian optimization could improve decision-making accuracy.
+- Incorporation of Betting Histories: Incorporating historical opponent behavior into the model could enable more nuanced strategies, such as identifying and responding to bluffs.
+- Realistic Opponent Actions: Opting to include, given more time for implementation, more realistic opponent actions like betting and raising, as well as for our agent, could help the agent adapt better to actual gameplay situations.
+- Improved Opponent Card Inference: Refining how opponent cards are inferred during rounds by using game state and betting history could improve predictive capabilities.
+  
+These enhancements to our model will aim to transition from overly conservative decisions toward more strategically balanced and adaptive gameplay.
+
