@@ -225,7 +225,101 @@ Each card is stored with two characters, the 1st character representing the numb
 ## Monte Carlo Agent Setup
 Because of finding the exact inference is impossible with imperfect information (i.e. the face down card and unpredictable nature of human mind), we used simulation to estimate the probability of winning. We have made two assumption that any cards which is not in the evidence (on the board) is in the dealable cards deck, and the opponents' hands is dealt after the river which means it has no particular effect on what could possibly be dealt onto the board. 
 
-In the first agent, we simulated the game from the moment the agent queries for the probability onwards. In the second agent, we used MCMC method to do simulation, that is we initialize all the non-evidence cards to some random valid values and in each iteration we resample one of the non-evidence cards and record the result. Both agent uses the count of win divided by the number of simulation to estimate the winning probability given the evidence. 
+In the first agent, we simulated the game from the moment the agent queries for the probability onwards.
+```
+def MC_agent1(number_player : int, seat : int, state : State):
+  if PW_E_Monte_Carlo(number_player, seat, state) > 0.15:
+    return "CHECK"
+  return "FOLD"
+
+def PW_E_Monte_Carlo(numb_player : int, seat : int, state : State):
+  simulator = PokerSimulator(number_of_player=numb_player, seat = seat)
+
+  num_of_games = 200 #We choose 200
+  count = 0
+  for i in (range(num_of_games)):
+    count += simulator.simulate_statecopy(state)
+  return count / num_of_games
+```
+
+In the second agent, we used MCMC method to do simulation, that is we initialize all the non-evidence cards to some random valid values and in each iteration we resample one of the non-evidence cards and record the result. Both agent uses the count of win divided by the number of simulation to estimate the winning probability given the evidence. 
+```
+def MCMC_agent(numb_player, seat, state):
+  cpt = MCMC(numb_player, seat, state)
+  return Action(cpt, state)
+
+#Agent
+def Action(win_probability, state : State):
+  game_stage = len(state.board_cards)
+  if game_stage == 0: #After dealin hands
+      if win_probability > 0.10:
+        return "CHECK"
+      else:
+        return "FOLD"
+  if game_stage == 3: #Flop
+      if win_probability > 0.20:
+        return "CHECK"
+      else:
+        return "FOLD"
+  if game_stage == 4: #Turn
+      if win_probability > 0.20:
+        return "CHECK"
+      else:
+        return "FOLD"
+  if game_stage == 5: #River
+      if win_probability > 0.30:
+        return "CHECK"
+      else:
+        return "FOLD"
+
+  return "WHAT"
+def MCMC(number_of_player: int,
+        seat: int,
+        state: State,
+        number_of_iteration: int = 1000):
+    #======Internal Logic=====
+    def initialize_values(players, board, dealable_cards, non_evidence_player_indices, non_evidence_board_indices):
+        for i in non_evidence_player_indices:
+            players[i][0]= random.choice(dealable_cards)
+            dealable_cards.remove(players[i][0])
+            players[i][1]= random.choice(dealable_cards)
+            dealable_cards.remove(players[i][1])
+        # Initialize the board
+        for j in non_evidence_board_indices:
+            board.append(random.choice(dealable_cards))
+            dealable_cards.remove(board[j])
+
+    def get_non_evidence_indices(number_of_player, players, board):
+        non_evidence_player_indices = []
+        for i in range(number_of_player):
+            if players[i][0].unknown_status:
+                non_evidence_player_indices.append(i)
+        non_evidence_board_indices = [i for i in range(len(board), 5)]
+        return non_evidence_player_indices,non_evidence_board_indices
+
+    _state = deepcopy(state)
+    players, board = deepcopy(_state.hole_cards), deepcopy(_state.board_cards)
+    for i in range(len(board)):
+        board[i] = board[i][0]
+
+    dealable_cards = [card for card in _state.get_dealable_cards()]
+
+    non_evidence_player_indices, non_evidence_board_indices = get_non_evidence_indices(number_of_player, players, board)
+    initialize_values(players, board, dealable_cards, non_evidence_player_indices, non_evidence_board_indices)
+    count_win = 0
+
+    for _ in range(number_of_iteration):
+        resample(players, board, dealable_cards, non_evidence_player_indices, non_evidence_board_indices)
+        #Evaluation
+        my_hand = StandardHighHand.from_game(players[seat], board)
+        opp_hand = [StandardHighHand.from_game(players[i], board) for i in range(number_of_player) if i != seat]
+        win = all(my_hand > opp_hand[i] for i in range(number_of_player-1))
+        count_win += 1 if win else 0
+
+    return count_win / number_of_iteration
+
+```
+
 
 
 ## CPT
@@ -245,6 +339,42 @@ False (Bad) Check: The check lead to a lose. (FC)
 True (Good) Fold : The fold avoid a lose. (TF)
 False (Bad) Fold : The fold avoid a win. (FF)
 
+Below is a sample of the code used to evaluate the model:
+```
+
+num_games = 1000 # Number of games to simulate per agent
+
+
+def run_games(pk, agent, num_games, description):
+    results = []
+    for i in trange(num_games, desc=description):
+        results.append(pk.start_round(agent))
+    return results
+
+
+pk = PokerGame(show_log=False, seed=6969)
+
+with ProcessPoolExecutor() as executor:
+    futures = {
+        "mcmc": executor.submit(run_games, pk, MCMC_agent, num_games, "Simulating MCMC Agent Games"),
+        "mc": executor.submit(run_games, pk, MC_agent1, num_games, "Simulating MC Agent Games")
+    }
+
+    # Get the results and process them
+    for agent_name, future in futures.items():
+        results = future.result()  # Get the list of game results
+
+        true_pos, false_pos, true_neg, false_neg = 0, 0, 0, 0
+        for game in results:
+            if game == "TC":
+                true_pos += 1
+            elif game == "FC":
+                false_pos += 1
+            elif game == "TF":
+                true_neg += 1
+            elif game == "FF":
+                false_neg += 1
+```
 The results from the MCMC Agent provided:
 8 TC, 13 FP, 796 TF, 183 FF
 with a winning accuracy of 4.19%, a losing accuracy of 98.39%, P(Win|Check) of 38.10% and P(Lose|Fold) of 81.31%.
